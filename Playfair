@@ -1,0 +1,57 @@
+import java.util.*;
+public class Playfair {
+    static char[][] keyM = new char[5][5];
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Key: ");
+        String key = sc.nextLine().toUpperCase().replace("J", "I");
+        buildKey(key);
+        System.out.print("Plaintext: ");
+        String p = sc.nextLine().toUpperCase().replace("J", "I");
+        p = prep(p);
+        String enc = proc(p, true);
+        String dec = proc(enc, false);
+        System.out.println("Matrix:");
+        for (char[] r : keyM) System.out.println(Arrays.toString(r));
+        System.out.println("Prepared: " + p);
+        System.out.println("Enc: " + enc);
+        System.out.println("Dec: " + dec);
+    }
+    static void buildKey(String key) {
+        boolean[] used = new boolean[26]; used['J'-'A']=true;
+        StringBuilder sb = new StringBuilder();
+        for (char c:key.toCharArray()) if (!used[c-'A']) {sb.append(c); used[c-'A']=true;}
+        for (char c='A';c<='Z';c++) if (!used[c-'A']) {sb.append(c); used[c-'A']=true;}
+        for (int i=0,k=0;i<5;i++) for (int j=0;j<5;j++) keyM[i][j]=sb.charAt(k++);
+    }
+    static String prep(String t) {
+        StringBuilder sb=new StringBuilder();
+        for (int i=0;i<t.length();i++) {
+            sb.append(t.charAt(i));
+            if (i+1<t.length() && t.charAt(i)==t.charAt(i+1)) sb.append('X');
+        }
+        if (sb.length()%2!=0) sb.append('X');
+        return sb.toString();
+    }
+    static String proc(String t, boolean enc) {
+        StringBuilder r=new StringBuilder();
+        for (int i=0;i<t.length();i+=2) {
+            int[] A=pos(t.charAt(i)), B=pos(t.charAt(i+1));
+            if (A[0]==B[0]) { // same row
+                r.append(keyM[A[0]][(A[1]+(enc?1:4))%5]);
+                r.append(keyM[B[0]][(B[1]+(enc?1:4))%5]);
+            } else if (A[1]==B[1]) { // same col
+                r.append(keyM[(A[0]+(enc?1:4))%5][A[1]]);
+                r.append(keyM[(B[0]+(enc?1:4))%5][B[1]]);
+            } else { // rectangle
+                r.append(keyM[A[0]][B[1]]);
+                r.append(keyM[B[0]][A[1]]);
+            }
+        }
+        return r.toString();
+    }
+    static int[] pos(char c) {
+        for (int i=0;i<5;i++) for (int j=0;j<5;j++) if (keyM[i][j]==c) return new int[]{i,j};
+        return null;
+    }
+}
