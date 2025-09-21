@@ -1,0 +1,56 @@
+import java.util.Scanner;
+public class RowColumnCipherUser {
+    public static String encrypt(String message, int rows, int cols) {
+        while (message.length() < rows * cols) {
+            message += "X";
+        }
+        char[][] matrix = new char[rows][cols];
+        int index = 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                matrix[r][c] = message.charAt(index++);
+            }
+        }
+        String encrypted = "";
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                encrypted += matrix[r][c];
+            }
+        }
+        return encrypted;
+    }
+    public static String decrypt(String encrypted, int rows, int cols) {
+        char[][] decMatrix = new char[rows][cols];
+        int index = 0;
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                decMatrix[r][c] = encrypted.charAt(index++);
+            }
+        }
+        String decrypted = "";
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                decrypted += decMatrix[r][c];
+            }
+        }
+        decrypted = decrypted.replaceAll("X+$", "");
+        return decrypted;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter message: ");
+        String message = sc.nextLine();
+        System.out.print("Enter number of rows: ");
+        int rows = sc.nextInt();
+        System.out.print("Enter number of columns: ");
+        int cols = sc.nextInt();
+        if (rows * cols < message.length()) {
+            System.out.println("Error: Rows * Columns must be >= message length.");
+            return;
+        }
+        String encrypted = encrypt(message, rows, cols);
+        System.out.println("Encrypted: " + encrypted);
+        String decrypted = decrypt(encrypted, rows, cols);
+        System.out.println("Decrypted: " + decrypted);
+    }
+}
