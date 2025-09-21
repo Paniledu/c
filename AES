@@ -1,0 +1,26 @@
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
+public class AESExample {
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter text to encrypt: ");
+        String text = sc.nextLine();
+        System.out.print("Enter 16-character key: ");
+        String key = sc.nextLine();
+        if (key.length() != 16) {
+            System.out.println("Error: Key must be exactly 16 characters!");
+            return;
+        }
+        SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encrypted = cipher.doFinal(text.getBytes());
+        String encText = Base64.getEncoder().encodeToString(encrypted);
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        String decText = new String(cipher.doFinal(encrypted));
+        System.out.println("Original  : " + text);
+        System.out.println("Encrypted : " + encText);
+        System.out.println("Decrypted : " + decText);
+    }
+}
