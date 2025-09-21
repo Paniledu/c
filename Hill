@@ -1,0 +1,62 @@
+import java.util.*;
+public class HillCipher2x2 {
+    static int[][] K = new int[2][2];  // Key matrix
+    static int[][] I = new int[2][2];  // Inverse key matrix
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter 2x2 key matrix (row by row):");
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                K[i][j] = sc.nextInt();
+            }
+        }
+        if (!inverseMatrix()) {
+            System.out.println("Key matrix is not invertible modulo 26.");
+            sc.close();
+            return;
+        }
+        System.out.print("Enter plaintext (A-Z only): ");
+        String plaintext = sc.next().toUpperCase();
+        if (plaintext.length() % 2 != 0) {
+            plaintext += "X";
+        }
+        System.out.println("Key Matrix: [" + K[0][0] + " " + K[0][1] + "] [" + K[1][0] + " " + K[1][1] + "]");
+        System.out.println("Plaintext: " + plaintext);
+        String encrypted = process(plaintext, K);
+        String decrypted = process(encrypted, I);
+        System.out.println("Encrypted: " + encrypted);
+        System.out.println("Decrypted: " + decrypted);
+    }
+    static String process(String text, int[][] M) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < text.length(); i += 2) {
+            int a = text.charAt(i) - 'A';
+            int b = text.charAt(i + 1) - 'A';
+            int x = (M[0][0] * a + M[0][1] * b) % 26;
+            int y = (M[1][0] * a + M[1][1] * b) % 26;
+            result.append((char) (x + 'A'));
+            result.append((char) (y + 'A'));
+        }
+        return result.toString();
+    }
+    static boolean inverseMatrix() {
+        int a = K[0][0], b = K[0][1], c = K[1][0], d = K[1][1];
+        int det = (a * d - b * c) % 26;
+        if (det < 0) det += 26;
+        int detInv = modInverse(det, 26);
+        if (detInv == -1) return false; 
+        I[0][0] = (d * detInv) % 26;
+        I[0][1] = ((26 - b) * detInv) % 26;
+        I[1][0] = ((26 - c) * detInv) % 26;
+        I[1][1] = (a * detInv) % 26;
+
+        return true;
+    }
+    static int modInverse(int a, int m) {
+        a = a % m;
+        for (int x = 1; x < m; x++) {
+            if ((a * x) % m == 1) return x;
+        }
+        return -1;
+    }
+}
