@@ -1,0 +1,13 @@
+import java.security.MessageDigest;
+public class SHA512Example {
+public static void main(String[] args) throws Exception {
+String text = "Hello";
+MessageDigest digest = MessageDigest.getInstance("SHA-512");
+byte[] hashBytes = digest.digest(text.getBytes());
+StringBuilder hexString = new StringBuilder();
+for (byte b : hashBytes) {
+hexString.append(String.format("%02x", b));
+}
+System.out.println("SHA-512 Message Digest: " + hexString.toString());
+}
+}
