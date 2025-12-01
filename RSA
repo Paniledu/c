@@ -10,7 +10,6 @@ public class RSASimple {
         System.out.print("Text: ");
         String text = sc.nextLine();
 
-        // Generate RSA keys
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(1024);
         KeyPair kp = kpg.generateKeyPair();
