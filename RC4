@@ -20,7 +20,5 @@ public class Rc4 {
 
 	        c.init(Cipher.DECRYPT_MODE, sk);
 	        System.out.println("Decrypted: " + new String(c.doFinal(enc)));
-
-	        sc.close();
 	    }
 	}
