@@ -1,20 +1,27 @@
 import java.security.*;
 import javax.crypto.*;
 import java.util.*;
-public class SimpleRSA {
+import java.util.Base64;
+
+public class RSASimple {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter text to encrypt: ");
+
+        System.out.print("Text: ");
         String text = sc.nextLine();
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RS");
-        keyGen.initialize(1024);
-        KeyPair keyPair = keyGen.generateKeyPair();
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
-        byte[] encrypted = cipher.doFinal(text.getBytes());
-        System.out.println("Encrypted text (Base64): " + Base64.getEncoder().encodeToString(encrypted));
-        cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-        byte[] decrypted = cipher.doFinal(encrypted);
-        System.out.println("Decrypted text: " + new String(decrypted));
+
+        // Generate RSA keys
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(1024);
+        KeyPair kp = kpg.generateKeyPair();
+
+        Cipher c = Cipher.getInstance("RSA");
+
+        c.init(Cipher.ENCRYPT_MODE, kp.getPublic());
+        byte[] enc = c.doFinal(text.getBytes());
+        System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(enc));
+
+        c.init(Cipher.DECRYPT_MODE, kp.getPrivate());
+        System.out.println("Decrypted: " + new String(c.doFinal(enc)));
     }
 }
